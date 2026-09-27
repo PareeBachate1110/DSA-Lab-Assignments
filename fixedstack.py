@@ -1,86 +1,91 @@
-class Node:
-    def __init__(self, data):
-        self.data = data            #current data
-        self.next = None            #next node is unknown, hence assigned to "None"
-      
+class Book:
+    def __init__(self, book):
+        self.book = book
+        self.next = None
+
 
 class Stack:
     def __init__(self):
-        self.top = None         #currently stack is empty hence topmost element is "None"
-        self.count=0            #there are 0 elements in the stack rn
-        self.maxno=5            #stack can have maximum size 5
+        self.top = None
+        self.length = 0
 
-    def isEmpty(self):
-        return self.count==0        #returns boolean value
+    def returnbook(self, x):                    # insert at beginning
+        self.length += 1
 
-    def isFull(self):
-        return self.count==self.maxno   #returns boolean value
+        if self.top is None:              # if stack is empty
+            self.top = Book(x)
+            print("Returned : ",x)
+            return
 
-    def push(self, data):
-        if self.isFull():
-            print("Stack Overflow")
         else:
-            new_node = Node(data)               #will be added to "data" in Node class
-            new_node.next = self.top            #make the new node's next point to the current top node.
-            self.top = new_node                 #Make the new node the new top.
-            self.count += 1
-            print(f"{data} pushed into stack")
+            newbook = Book(x)             # create new book
+            newbook.next = self.top       # point to current top
+            self.top = newbook            # make new book the top
+            print("Returned : ",x)
+            return
 
-    def pop(self):
-        if self.isEmpty():
-            print("Stack Underflow")
-        else:
-            popped = self.top.data              #get the data from the top node
-            self.top = self.top.next            #move top to the next node, removing the current top
-            self.count -= 1
-            print(popped, "popped from stack")
+    def borrowbook(self):                        # delete at beginning
+        if self.top == None:
+            print("Stack is Empty")
+            return
+
+        self.length -= 1
+        popped = self.top.book             # store top book
+        self.top = self.top.next            # next book becomes top
+
+        print("Borrowed : " + str(popped))
+        return
 
     def peek(self):
-        if self.isEmpty():
-            print("Stack is empty")
-        else:
-            print("Top element is:", self.top.data)
+        if self.top == None:
+            print("Stack is Empty")
+            return
+
+        print("Top : " + str(self.top.book))
 
     def display(self):
-        if self.isEmpty():
+        curr = self.top                   # start at top
+
+        if self.top is None:
             print("Stack is empty")
-        else:
-            temp = self.top
-            print("Stack:", end=" ")
+            return
 
-            while temp is not None:
-                print(temp.data, end=" ")
-                temp = temp.next
+        result = "Stack: "
 
-            print()
+        while curr != None:                 #while curr is none
+            result += str(curr.book)        #store current book in result
+
+            if curr.next != None:           #if there is another book present after curr
+                result += " "               #separate with space
+
+            curr = curr.next                #traverse
+
+        print(result)
+        
 
 
-stack = Stack()
+# Create stack
+stack1 = Stack()
 
-while True:
-    print("\n1. Push")
-    print("2. Pop")
-    print("3. Peek")
-    print("4. Display")
-    print("5. Exit")
+# Number of operations
+n = int(input())
 
-    choice = int(input("Enter your choice: "))
+# Store outputs
+output = []
 
-    if choice == 1:
-        element = int(input("Enter element: "))
-        stack.push(element)
+for i in range(n):
+    operation = input().split()
 
-    elif choice == 2:
-        stack.pop()
+    if operation[0] == "RETURN":
+        book = " ".join(operation[1:])          #from first index onwards and join everything from there with spaces
+        stack1.returnbook(book)
+        output.append("Returned :" + book)
 
-    elif choice == 3:
-        stack.peek()
+    elif operation[0] == "DISPLAY":
+        output.append(stack1.display())
 
-    elif choice == 4:
-        stack.display()
+    elif operation[0] == "BORROW":
+        output.append(stack1.borrowbook())
 
-    elif choice == 5:
-        break
-
-    else:
-        print("Invalid choice")
+    elif operation[0] == "PEEK":
+        output.append(stack1.peek())
